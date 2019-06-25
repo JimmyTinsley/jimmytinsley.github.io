@@ -1,33 +1,30 @@
 jsproxy_config({
   // 当前配置的版本（服务端记录在日志中，方便排查问题）
-  ver: '51',
+  ver: '55',
 
   // 节点配置
   node_map: {
     'aliyun-hk': {
-      label: '轻量云-香港',
+      label: '演示服务-香港节点',
       lines: [
         // 多条线路，负载均衡系统会从其中选一条
         'node-aliyun-hk-0.etherdream.com:8443',
-        'node-aliyun-hk-1.etherdream.com:8443'
+        'node-aliyun-hk-1.etherdream.com:8443',
+        'node-aliyun-hk-2.etherdream.com:8443',
       ]
     },
     'aliyun-sg': {
-      label: '轻量云-新加坡',
+      label: '演示服务-新加坡节点',
       lines: [
         'node-aliyun-sg.etherdream.com:8443'
       ]
     },
-    'AWS-sg': {
-      label: 'AWS-新加坡',
+    'mysite': {
+      label: 'sgp-aws',
       lines: [
-        'proxy.jimmytinsley.com:8443'
-      ]
-    },
-    'bwh-la': {
-      label: '搬瓦工-洛杉矶',
-      lines: [
-        'node-bwh-la.etherdream.com:8443'
+        // 静态资源和代理接口位于同个服务器的场合
+        // 例如默认的 ip.xip.io 以及 cloudflare worker
+        '3.1.211.191.nip.io:8443'
       ]
     },
     'cfworker': {
@@ -35,16 +32,15 @@ jsproxy_config({
       hidden: true,
       lines: [
         // 实验中...
-        // 参考 https://github.com/EtherDream/jsproxy/tree/master/cf-worker
         'node-cfworker.etherdream.com:8443'
       ]
     }
   },
 
   /**
-   * 默认节点  
+   * 默认节点
    */
-  node_default: 'AWS-sg',
+  node_default: 'aliyun-hk',
 
   /**
    * 加速节点
@@ -61,104 +57,22 @@ jsproxy_config({
   // assets_cdn: 'assets/',
 
   /**
-   * 可直连的主机列表（通常为支持 CORS 的 CDN）
-   * 
-   * 必须满足：
-   *  1.返回头 access-control-allow-origin 为 *
-   *  2.不校验 referer，或者允许为空
-   *  3.不校验 origin
-   * 
-   * 尽量满足：
-   *  1.请求 METHOD 为 GET
-   *  2.请求不产生 preflight
+   * 自定义注入页面的 HTML
    */
-  direct_hosts: [
-    // js cdn
-    'cdn.jsdelivr.net',
-    'unpkg.com',
+  inject_html: '<!-- custom html -->',
 
-    // ali
-    'at.alicdn.com',
-    'img.alicdn.com',
-    'g.alicdn.com',
-    'i.alicdn.com',
-    'atanx.alicdn.com',
-    'wwc.alicdn.com',
-    'gw.alicdn.com',
-    'assets.alicdn.com',
-    'aeis.alicdn.com',
-    'atanx.alicdn.com',
-    'sc01.alicdn.com',
-    'sc02.alicdn.com',
-    'sc03.alicdn.com',
-    'sc04.alicdn.com',
-
-    // baidu
-    // 'img*.bdimg.com',
-    'img0.bdimg.com',
-    'img1.bdimg.com',
-    'img2.bdimg.com',
-    'img3.bdimg.com',
-    'img4.bdimg.com',
-    'img5.bdimg.com',
-    'webmap0.bdimg.com',
-    'webmap1.bdimg.com',
-    'iknowpc.bdimg.com',
-    'gss0.baidu.com',
-
-    // zhihu
-    'static.zhihu.com',
-    'pic1.zhimg.com',
-    'pic2.zhimg.com',
-    'pic3.zhimg.com',
-    'pic4.zhimg.com',
-    'pic5.zhimg.com',
-    'pic7.zhimg.com',
-
-    // jianshu
-    'upload.jianshu.io',
-    'upload-images.jianshu.io',
-    'cdn2.jianshu.io',
-
-    // yd
-    'shared.ydstatic.com',
-
-    // ?
-    'img.zcool.cn',
-
-    // uc
-    'image.uc.cn',
-
-    // csdn
-    'csdnimg.cn',
-    'g.csdnimg.cn',
-    'img-ads.csdn.net',
-
-    // sogou
-    'img03.sogoucdn.com',
-    'img04.sogoucdn.com',
-
-    // wukong
-    'p1.pstatp.com',
-
-    // shimo
-    'images-cdn.shimo.im',
-
-    // img host
-    's1.momo.moda',
-
-    // 
-    'user-gold-cdn.xitu.io',
-    'ob7zbqpa6.qnssl.com',
-
-    // ???
-    'img-egc.xvideos-cdn.com',
-    'img-hw.xvideos-cdn.com',
-    'img-l3.xvideos-cdn.com',
-    'static-egc.xvideos-cdn.com',
-    'cdn77-pic.xvideos-cdn.com',
-
-    // ??
-    'ci.phncdn.com',
-  ]
+  /**
+   * URL 自定义处理（设计中）
+   */
+  url_handler: {
+    'https://www.baidu.com/img/baidu_resultlogo@2.png': {
+      replace: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png'
+    },
+    'https://www.pornhub.com/': {
+      redir: 'https://php.net/'
+    },
+    'http://haha.com/': {
+      content: 'Hello World'
+    },
+  }
 })
