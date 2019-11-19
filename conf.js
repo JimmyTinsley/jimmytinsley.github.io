@@ -29,12 +29,12 @@ jsproxy_config({
     'mysite': {
       label: '当前站点',
       lines: {
+        'jsproxy.jimmytinsley.workers.dev': 1,
       }
     },
     // 该节点用于加载大体积的静态资源
     'cfworker': {
-      label: '',
-      hidden: true,
+      label: 'cfworker',
       lines: {
         // 收费版（高权重）
         'node-cfworker-2.etherdream.com': 4,
@@ -52,7 +52,7 @@ jsproxy_config({
   /**
    * 默认节点
    */
-  node_default: 'demo-hk',
+  node_default: 'mysite',
   // node_default: /jsproxy-demo\.\w+$/.test(location.host) ? 'demo-hk' : 'mysite',
 
   /**
