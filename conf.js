@@ -29,7 +29,7 @@ jsproxy_config({
     'mysite': {
       label: '当前站点',
       lines: {
-        '52.68.96.220.nip.io:8443': 2,
+        'jsproxy2.jimmytinsley.workers.dev': 2,
       }
     },
     // 该节点用于加载大体积的静态资源
